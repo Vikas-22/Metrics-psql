@@ -12736,19 +12736,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\vg3\\.nuget\\packages\\": {}
+    "C:\\Users\\B.o.r.n_star\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\vg3\\source\\repos\\Metrices-psql\\Metrices-psql\\Metrices-psql.csproj",
+      "projectUniqueName": "C:\\Users\\B.o.r.n_star\\Source\\Repos\\Vikas-22\\Metrics-psql\\Metrices-psql\\Metrices-psql.csproj",
       "projectName": "Metrices-psql",
-      "projectPath": "C:\\Users\\vg3\\source\\repos\\Metrices-psql\\Metrices-psql\\Metrices-psql.csproj",
-      "packagesPath": "C:\\Users\\vg3\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\vg3\\source\\repos\\Metrices-psql\\Metrices-psql\\obj\\",
+      "projectPath": "C:\\Users\\B.o.r.n_star\\Source\\Repos\\Vikas-22\\Metrics-psql\\Metrices-psql\\Metrices-psql.csproj",
+      "packagesPath": "C:\\Users\\B.o.r.n_star\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\B.o.r.n_star\\Source\\Repos\\Vikas-22\\Metrics-psql\\Metrices-psql\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\vg3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\B.o.r.n_star\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -12756,6 +12756,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\sdk\\7.0.305\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -12838,6 +12839,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[6.0.19, 6.0.19]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[6.0.19, 6.0.19]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[6.0.19, 6.0.19]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[6.0.19, 6.0.19]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -12846,7 +12865,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.305\\RuntimeIdentifierGraph.json"
       }
     }
   }

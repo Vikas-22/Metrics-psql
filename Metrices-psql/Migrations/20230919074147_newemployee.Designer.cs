@@ -8,11 +8,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Metrices_psql.Data.Migrations
+namespace Metrices_psql.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230911165544_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20230919074147_newemployee")]
+    partial class newemployee
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

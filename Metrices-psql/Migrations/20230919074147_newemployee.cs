@@ -3,10 +3,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Metrices_psql.Data.Migrations
+namespace Metrices_psql.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class newemployee : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

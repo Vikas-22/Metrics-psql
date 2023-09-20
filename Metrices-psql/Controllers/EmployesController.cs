@@ -26,6 +26,23 @@ namespace Metrices_psql.Controllers
         "Total number of employees created");
 
 
+       static Prometheus.Counter TotalIndexReached = Metrics.CreateCounter("Total_index_page_reached", "Total_request_got_for_index");
+
+
+      static  Gauge TotalEmployees = Metrics.CreateGauge("Total_Employee_in_System", "Current_number_of_Employees");
+
+
+        private static readonly Summary ResponseTimeSummary = Metrics.CreateSummary(
+         "http_response_time_seconds",
+         "HTTP response time in seconds",
+
+         new SummaryConfiguration
+         {
+             LabelNames = new[] { "status_code" } // You can add labels to the summary
+         }
+     );
+
+
         private static readonly Histogram RequestDuration = Metrics.CreateHistogram(
     "http_request_duration_seconds",
     "Duration of HTTP requests in seconds",
@@ -47,7 +64,8 @@ namespace Metrices_psql.Controllers
                 {
                     return NotFound();
                 }
-                
+                TotalIndexReached.Inc();
+                TotalEmployees.Set(_context.Employes.Count());
                 return await _context.Employes.ToListAsync();
             }
             finally
@@ -135,6 +153,7 @@ namespace Metrices_psql.Controllers
 
                 _context.Employes.Add(employee);
                 await _context.SaveChangesAsync();
+                EmployeeCreateCounter.Inc();
 
                 // Use CreatedAtAction with the appropriate route name and route values
                 return CreatedAtAction("GetEmployes", new { id = employee.EmployeeId }, employee);
@@ -169,5 +188,30 @@ namespace Metrices_psql.Controllers
         {
             return (_context.Employes?.Any(e => e.EmployeeId == id)).GetValueOrDefault();
         }
+
+        private void UpdateResponseTimeSummary(TimeSpan duration, int statusCode)
+        {
+            ResponseTimeSummary
+                .WithLabels(statusCode.ToString())
+                .Observe(duration.TotalSeconds);
+        }
+
+        [HttpGet("testindexpage")]
+        public IActionResult TestIndexPage()
+        {
+            Random random = new Random();
+            int randomNumber = random.Next(1, 3);
+
+            if (randomNumber == 1)
+            {
+                return Ok("Status Code 200"); 
+            }
+            else
+            {
+                return BadRequest("Status Code 400"); 
+            }
+        }
+
+
     }
 }
