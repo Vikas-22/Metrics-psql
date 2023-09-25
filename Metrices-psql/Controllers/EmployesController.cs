@@ -9,6 +9,8 @@ using Metrices_psql;
 using Metrices_psql.Models;
 using Prometheus;
 
+
+
 namespace Metrices_psql.Controllers
 {
     [Route("api/[controller]")]
@@ -16,49 +18,76 @@ namespace Metrices_psql.Controllers
     public class EmployesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly MetricsService _metricsService;
 
-        public EmployesController(ApplicationDbContext context)
+        public EmployesController(ApplicationDbContext context, MetricsService metricsService)
         {
             _context = context;
+            _metricsService = metricsService;
         }
-        private static readonly Counter EmployeeCreateCounter = Metrics.CreateCounter(
-        "employee_create_total",
-        "Total number of employees created");
 
-
-        private static readonly Histogram RequestDuration = Metrics.CreateHistogram(
-    "http_request_duration_seconds",
-    "Duration of HTTP requests in seconds",
-    new HistogramConfiguration
-    {
-        Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.2, count: 5) // Configure buckets as needed
-    }
-    );
 
         // GET: api/Employes
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employes>>> GetEmployes()
         {
-            var timer = RequestDuration.NewTimer();
-
-            try
-            {
+            
                 if (_context.Employes == null)
                 {
                     return NotFound();
                 }
-                
+                _metricsService.IncrementGetEmployeeInvocations();
                 return await _context.Employes.ToListAsync();
-            }
-            finally
-            {
-                timer.ObserveDuration();
-            }
-
-
-         
+ 
         }
 
+
+        [HttpGet("totalindexreached")]
+        public async Task<ActionResult<IEnumerable<Metric>>> Gettotalindexreached()
+        {
+           try
+    {
+        var metrics = await _context.Metrics
+            .Where(m => m.MetricName == "get_employee_invocations")
+            .Select(m => new
+            {
+                MetricName = m.MetricName,
+                MetricValue = m.MetricValue,
+                MetricTimestamp = m.MetricTimestamp
+            })
+            .ToListAsync();
+
+        return Ok(metrics);
+    }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+        [HttpGet("totalEmployees")]
+        public async Task<ActionResult<IEnumerable<Metric>>> Gettotalemployee()
+        {
+            try
+            {
+                var metrics = await _context.Metrics
+                    .Where(m => m.MetricName == "total_employees")
+                    .Select(m => new
+                    {
+                        MetricName = m.MetricName,
+                        MetricValue = m.MetricValue,
+                        MetricTimestamp = m.MetricTimestamp
+                    })
+                    .ToListAsync();
+
+                return Ok(metrics);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
         // GET: api/Employes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Employes>> GetEmployes(int id)
@@ -77,8 +106,7 @@ namespace Metrices_psql.Controllers
             return employes;
         }
 
-        // PUT: api/Employes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployes(int id, Employes employes)
         {
@@ -132,11 +160,13 @@ namespace Metrices_psql.Controllers
                 {
                     return Problem("Entity set 'ApplicationDbContext.Employees' is null.");
                 }
-
+               
                 _context.Employes.Add(employee);
                 await _context.SaveChangesAsync();
 
-                // Use CreatedAtAction with the appropriate route name and route values
+                // Update the "total_employees" gauge metric
+                _metricsService.UpdateTotalEmployees();
+
                 return CreatedAtAction("GetEmployes", new { id = employee.EmployeeId }, employee);
             }
             catch (Exception ex)
@@ -161,6 +191,7 @@ namespace Metrices_psql.Controllers
 
             _context.Employes.Remove(employes);
             await _context.SaveChangesAsync();
+            _metricsService.UpdateTotalEmployees();
 
             return NoContent();
         }
