@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Prometheus;
 using Metrices_psql;
+using Metrices_psql.datalayer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+//builder.Services.AddScoped<PrometheusQueryService>();   
+builder.Services.AddScoped<IEmployesRepository,EmployesRepository>();
+builder.Services.AddScoped<IPrometheusQueryServices, PrometheusQueryService>();
+builder.Services.AddHttpClient<PrometheusQueryService>();
 
 // Configure database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

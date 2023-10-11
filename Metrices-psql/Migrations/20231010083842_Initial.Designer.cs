@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Metrices_psql.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230919074147_newemployee")]
-    partial class newemployee
+    [Migration("20231010083842_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,6 +32,10 @@ namespace Metrices_psql.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EmployeeId"));
 
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
@@ -39,6 +43,9 @@ namespace Metrices_psql.Migrations
                     b.Property<string>("EmployeeName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<decimal>("Salary")
+                        .HasColumnType("numeric");
 
                     b.HasKey("EmployeeId");
 
