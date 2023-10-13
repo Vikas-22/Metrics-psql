@@ -246,29 +246,105 @@
             throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
         }
 
-        //public async Task<List<ChartDataIndexCount>> ChartDataTotalEmployes()
-        //{
-        //    var promQLQuery = "Total_Employee_Overall[1h]";
+        public async Task<List<ChartDataCounters>> ChartDataTotalEmployes()
+        {
+            var promQLQuery = "Total_Employee_Overall[1h]";
+            var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
 
-        //    var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+            var response = await _httpClient.GetAsync(queryUrl);
 
-        //    var result = await _httpClient.GetAsync(queryUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
 
-           
+                // Parse the JSON response from Prometheus
+                var prometheusData = JObject.Parse(responseContent);
 
-        //    //if (result.IsSuccessStatusCode)
-        //    //{
-        //    //    var resultcontent = await result.Content.ReadAsStringAsync();
-        //    //    var prometheusdata = JObject.Parse(resultcontent);
+                // Extract the "result" data
+                var results = prometheusData["data"]["result"];
 
-        //    //    var Results = prometheusdata["data"]["result"];
+                // Create a list of ChartDataPoint objects to store data points
+                var chartData = new List<ChartDataCounters>();
 
-        //    //    var chartDataIndexCount = new List<ChartDataIndexCount>();
+                foreach (var result in results)
+                {
+                    var metric = result["metric"];
+                    var values = result["values"];
 
-        //    //    foreach(var value in)
+                    foreach (var value in values)
+                    {
+                        // Declare variables inside the inner loop
+                        var timestamp = Convert.ToDouble(value[0]);
+                        var metricValue = Convert.ToDouble(value[1]);
 
-        //    //}
-        //}
+                        // Convert the Unix timestamp to IST
+                        var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
+
+                        // Create a ChartDataPoint object and add it to the list
+                        chartData.Add(new ChartDataCounters
+                        {
+                           
+                            Timestamp = istTime.UtcDateTime,
+                            Value = metricValue
+                        });
+                    }
+                }
+
+                return chartData;
+            }
+
+            throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
+        }
+
+        public async Task<List<ChartDataCounters>> ChartDataIndexCount()
+        {
+            var promQLQuery = "Total_index_page_reached[1h]";
+            var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+
+            var response = await _httpClient.GetAsync(queryUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                // Parse the JSON response from Prometheus
+                var prometheusData = JObject.Parse(responseContent);
+
+                // Extract the "result" data
+                var results = prometheusData["data"]["result"];
+
+                // Create a list of ChartDataPoint objects to store data points
+                var chartData = new List<ChartDataCounters>();
+
+                foreach (var result in results)
+                {
+                    var metric = result["metric"];
+                    var values = result["values"];
+
+                    foreach (var value in values)
+                    {
+                        // Declare variables inside the inner loop
+                        var timestamp = Convert.ToDouble(value[0]);
+                        var metricValue = Convert.ToDouble(value[1]);
+
+                        // Convert the Unix timestamp to IST
+                        var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
+
+                        // Create a ChartDataPoint object and add it to the list
+                        chartData.Add(new ChartDataCounters
+                        {
+
+                            Timestamp = istTime.UtcDateTime,
+                            Value = metricValue
+                        });
+                    }
+                }
+
+                return chartData;
+            }
+
+            throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
+        }
     }
 
 }

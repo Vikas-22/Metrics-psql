@@ -23,7 +23,8 @@ namespace Metrices_psql.datalayer
 
 
         Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment();
-        //Task<List<ChartDataIndexCount>> ChartDataTotalEmployes();
+        Task<List<ChartDataCounters>> ChartDataTotalEmployes();
+        Task<List<ChartDataCounters>> ChartDataIndexCount();
 
     }
 }

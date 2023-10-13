@@ -82,19 +82,6 @@ namespace Metrices_psql.Controllers
             }
         }
 
-        [HttpGet("ChartTotalEmployesByDepartment")]
-        public async Task<IActionResult> ChartTotalEmployesByDepartment()
-        {
-            try
-            {
-                var result = await _prometheusQueryServices.ChartDataTotalEmployeesByDepartment();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error querying Promethues: {ex.Message}");
-            }
-        }
 
 
     }
