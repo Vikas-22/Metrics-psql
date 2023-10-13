@@ -20,5 +20,10 @@ namespace Metrices_psql.datalayer
         Task<string> TotalEmployesOverallSystemPromethues();
         Task<string> TotalEmployesByDepartment();
 
+
+
+        Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment();
+        //Task<List<ChartDataIndexCount>> ChartDataTotalEmployes();
+
     }
 }

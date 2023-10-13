@@ -15,11 +15,11 @@ namespace Metrices_psql.Controllers
 {
     public class PromethuesController : Controller
     {
-        private readonly PrometheusQueryService _prometheusQueryService;
+        private readonly IPrometheusQueryServices _prometheusQueryServices;
        
-       public PromethuesController(PrometheusQueryService prometheusQueryService)
+       public PromethuesController(IPrometheusQueryServices prometheusQueryServices)
         {
-            _prometheusQueryService = prometheusQueryService;
+            _prometheusQueryServices = prometheusQueryServices;
         }
 
         [HttpGet("CustomQuery")]
@@ -27,7 +27,7 @@ namespace Metrices_psql.Controllers
         {
             try
             {
-                var result = await _prometheusQueryService.CustomQueryPromethues(customquery);
+                var result = await _prometheusQueryServices.CustomQueryPromethues(customquery);
 
                 return Ok(result);
             }
@@ -43,7 +43,7 @@ namespace Metrices_psql.Controllers
         {
             try
             {
-                var result = await _prometheusQueryService.TotalEmployesOverallSystemPromethues();
+                var result = await _prometheusQueryServices.TotalEmployesOverallSystemPromethues();
                 return Ok(result);
 
 
@@ -59,7 +59,7 @@ namespace Metrices_psql.Controllers
         {
             try
             {
-                var result = await _prometheusQueryService.TotalIndexReachedPromethues();
+                var result = await _prometheusQueryServices.TotalIndexReachedPromethues();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -73,7 +73,7 @@ namespace Metrices_psql.Controllers
         {
             try
             {
-                var result = await _prometheusQueryService.TotalEmployesByDepartment();
+                var result = await _prometheusQueryServices.TotalEmployesByDepartment();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -81,5 +81,21 @@ namespace Metrices_psql.Controllers
                 return StatusCode(500, $"Error querying Promethues: {ex.Message}");
             }
         }
+
+        [HttpGet("ChartTotalEmployesByDepartment")]
+        public async Task<IActionResult> ChartTotalEmployesByDepartment()
+        {
+            try
+            {
+                var result = await _prometheusQueryServices.ChartDataTotalEmployeesByDepartment();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error querying Promethues: {ex.Message}");
+            }
+        }
+
+
     }
 }

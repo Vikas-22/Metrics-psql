@@ -1,6 +1,7 @@
 ﻿namespace Metrices_psql.datalayer
 {
     using Metrices_psql.Models;
+    using Newtonsoft.Json.Linq;
     using Prometheus;
     using System;
     using System.Net.Http;
@@ -191,7 +192,85 @@
 
             throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
         }
+
+        
+       //ChartData ---------------------------------------------------------------------------------------------------
+        public async Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment()
+        {
+            var promQLQuery = "Total_Employee_in_System_ByDepartment[1h]";
+            var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+
+            var response = await _httpClient.GetAsync(queryUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                // Parse the JSON response from Prometheus
+                var prometheusData = JObject.Parse(responseContent);
+
+                // Extract the "result" data
+                var results = prometheusData["data"]["result"];
+
+                // Create a list of ChartDataPoint objects to store data points
+                var chartData = new List<ChartDataPoint>();
+
+                foreach (var result in results)
+                {
+                    var metric = result["metric"];
+                    var department = metric["department"].ToString();
+                    var values = result["values"];
+
+                    foreach (var value in values)
+                    {
+                        // Declare variables inside the inner loop
+                        var timestamp = Convert.ToDouble(value[0]);
+                        var metricValue = Convert.ToDouble(value[1]);
+
+                        // Convert the Unix timestamp to IST
+                        var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
+
+                        // Create a ChartDataPoint object and add it to the list
+                        chartData.Add(new ChartDataPoint
+                        {
+                            Department = department,
+                            Timestamp = istTime.UtcDateTime,
+                            Value = metricValue
+                        });
+                    }
+                }
+
+                return chartData;
+            }
+
+            throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
+        }
+
+        //public async Task<List<ChartDataIndexCount>> ChartDataTotalEmployes()
+        //{
+        //    var promQLQuery = "Total_Employee_Overall[1h]";
+
+        //    var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+
+        //    var result = await _httpClient.GetAsync(queryUrl);
+
+           
+
+        //    //if (result.IsSuccessStatusCode)
+        //    //{
+        //    //    var resultcontent = await result.Content.ReadAsStringAsync();
+        //    //    var prometheusdata = JObject.Parse(resultcontent);
+
+        //    //    var Results = prometheusdata["data"]["result"];
+
+        //    //    var chartDataIndexCount = new List<ChartDataIndexCount>();
+
+        //    //    foreach(var value in)
+
+        //    //}
+        //}
     }
+
 }
 
 
