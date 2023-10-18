@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\vg3\\source\\repos\\update\\Metrics-psql\\Metrics-psql\\Metrices-psql\\Metrices-psql.csproj": {}
+    "C:\\Users\\RAHULAPA\\Source\\Repos\\Metrics-psqlNew\\Metrices-psql\\Metrices-psql.csproj": {}
   },
   "projects": {
-    "C:\\Users\\vg3\\source\\repos\\update\\Metrics-psql\\Metrics-psql\\Metrices-psql\\Metrices-psql.csproj": {
+    "C:\\Users\\RAHULAPA\\Source\\Repos\\Metrics-psqlNew\\Metrices-psql\\Metrices-psql.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\vg3\\source\\repos\\update\\Metrics-psql\\Metrics-psql\\Metrices-psql\\Metrices-psql.csproj",
+        "projectUniqueName": "C:\\Users\\RAHULAPA\\Source\\Repos\\Metrics-psqlNew\\Metrices-psql\\Metrices-psql.csproj",
         "projectName": "Metrices-psql",
-        "projectPath": "C:\\Users\\vg3\\source\\repos\\update\\Metrics-psql\\Metrics-psql\\Metrices-psql\\Metrices-psql.csproj",
-        "packagesPath": "C:\\Users\\vg3\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\vg3\\source\\repos\\update\\Metrics-psql\\Metrics-psql\\Metrices-psql\\obj\\",
+        "projectPath": "C:\\Users\\RAHULAPA\\Source\\Repos\\Metrics-psqlNew\\Metrices-psql\\Metrices-psql.csproj",
+        "packagesPath": "C:\\Users\\RAHULAPA\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\RAHULAPA\\Source\\Repos\\Metrics-psqlNew\\Metrices-psql\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\vg3\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\RAHULAPA\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -51,6 +51,10 @@
             "App.Metrics.Formatters.Prometheus": {
               "target": "Package",
               "version": "[4.3.0, )"
+            },
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.2.0, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",

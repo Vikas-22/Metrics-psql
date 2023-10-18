@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Metrices_psql.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Emp : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
