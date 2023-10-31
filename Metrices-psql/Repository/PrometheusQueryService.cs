@@ -25,30 +25,46 @@
             LabelNames = new[] { "department" }
         });
 
-        //        static readonly Histogram EmployeeCreationDuration = Metrics.CreateHistogram(
-        //    "employee_creation_duration_seconds",
-        //    "Duration of employee creation operations in seconds",
-        //    new HistogramConfiguration
-        //    {
-        //        Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10),
-        //    }
-        //);
+        static readonly Gauge EmployeeFindDurationSummary = Metrics.CreateGauge(
+        "EmployeeFindDurationSummary",
+        "Summary of employee find operation duration in seconds",
+         new GaugeConfiguration
+        {
+     
+            LabelNames = new[] { "range" }
+   
+        //Buckets = new[]
+        //{
+        //    0.3, 0.5, 0.7, 1, 1.2
+        //},
+        //LabelNames = new[] { "range" }
+        //Buckets = new[] { 0.3, 0.5, 0.7, 1, 1.2 }
+        //Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10),
+        }
+    );
 
-        private static readonly Summary EmployeeFindDurationSummary = Metrics.CreateSummary(
-              "employee_find_duration_seconds_summary",
-              "Summary of employee find operation duration in seconds"
-          );
+        //private static readonly Summary EmployeeFindDurationSummary = Metrics.CreateSummary(
+        //      "employee_find_duration_seconds_summary",
+        //      "Summary of employee find operation duration in seconds"
+        //  );
 
      
 
         static Gauge TotalEmployeesOverall = Metrics.CreateGauge("Total_Employee_Overall", "Current_number_of_Employees_Overall");
 
-      
-        
-        
-        
-        //---------------------------------------------------------------------------------------------------
-        
+
+        static readonly Histogram DatabaseReadSpeedHistogram = Metrics.CreateHistogram(
+    "Database_Read_Speed",
+    "Read speed of database operations in seconds",
+    new HistogramConfiguration
+    {
+        Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.1, count: 10)
+    }
+);
+
+
+        //sentdata---------------------------------------------------------------------------------------------------
+
         public void TotalEmployesIncBYDepartment(Employes employes)
         {
             if (employes.Department != null)
@@ -83,11 +99,48 @@
 
         public void RecordEmployeeFindDuration(TimeSpan duration)
         {
-           
-            EmployeeFindDurationSummary.Observe(duration.TotalSeconds);
+
+            //EmployeeFindDurationSummary.Observe(duration.TotalSeconds);
+            //check time it took
+         
+            string label;
+
+            if (duration.TotalSeconds >= 0 && duration.TotalSeconds < 0.3)
+            {
+                label = "0s-0.3s";
+            }
+            else if (duration.TotalSeconds >= 0.3 && duration.TotalSeconds < 0.5)
+            {
+                label = "0.3s-0.5s";
+            }
+            else if (duration.TotalSeconds >= 0.5 && duration.TotalSeconds < 0.7)
+            {
+                label = "0.5s-0.7s";
+            }
+            else if (duration.TotalSeconds >= 0.7 && duration.TotalSeconds < 1)
+            {
+                label = "0.7s-1s";
+            }
+            else if (duration.TotalSeconds >= 1 && duration.TotalSeconds < 3)
+            {
+                label = "1s-3s";
+            }
+            else if (duration.TotalSeconds >= 3 && duration.TotalSeconds < 6)
+            {
+                label = "3s-6s";
+            }
+            else
+            {
+                label = "+10s"; //greater than 10+
+            }
+            
+            EmployeeFindDurationSummary.WithLabels(label).Inc();
+         //   EmployeeFindDurationSummary.Labels(label).Observe(duration.TotalSeconds);
+
+          //  DatabaseReadSpeedHistogram.Observe(duration.TotalSeconds);
         }
 
-        //Sent data ------------------------------------------------------------------------------------------
+        //Rcv data ------------------------------------------------------------------------------------------
         //public async Task<string> TotalEmployesCreatedPromethues()
         //{
         //    //querry to retrieve data for the past 1 hour
@@ -113,9 +166,9 @@
         //recieve data
 
 
-
-
-
+        //rcv data-------------------------------------------------------------------------
+       
+        
         public async Task<string> TotalIndexReachedPromethues()
         {
             //querry to retrieve data for the past 1 hour
@@ -195,9 +248,10 @@
 
         
        //ChartData ---------------------------------------------------------------------------------------------------
-        public async Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment()
+        public async Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment(string timeRange)
         {
-            var promQLQuery = "Total_Employee_in_System_ByDepartment[1h]";
+            var time = timeRange;
+            var promQLQuery = $"Total_Employee_in_System_ByDepartment[{timeRange}]";
             var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
 
             var response = await _httpClient.GetAsync(queryUrl);
@@ -234,7 +288,7 @@
                         chartData.Add(new ChartDataPoint
                         {
                             Department = department,
-                            Timestamp = istTime.UtcDateTime,
+                            Timestamp = istTime.DateTime,
                             Value = metricValue
                         });
                     }
@@ -246,9 +300,62 @@
             throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
         }
 
-        public async Task<List<ChartDataCounters>> ChartDataTotalEmployes()
+        public async Task<List<ChartDataCounter2Class>> ChartDataFindRequestDuration(string timeRange)
         {
-            var promQLQuery = "Total_Employee_Overall[1h]";
+            var time = timeRange;
+            var promQLQuery = $"EmployeeFindDurationSummary[{timeRange}]";
+            var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+
+            var response = await _httpClient.GetAsync(queryUrl);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+
+                // Parse the JSON response from Prometheus
+                var prometheusData = JObject.Parse(responseContent);
+
+                // Extract the "result" data
+                var results = prometheusData["data"]["result"];
+
+                // Create a list of ChartDataPoint objects to store data points
+                var chartData = new List<ChartDataCounter2Class>();
+
+                foreach (var result in results)
+                {
+                    var metric = result["metric"];
+                    var range = metric["range"].ToString();
+                    var values = result["values"];
+
+                    foreach (var value in values)
+                    {
+                        // Declare variables inside the inner loop
+                        var timestamp = Convert.ToDouble(value[0]);
+                        var metricValue = Convert.ToDouble(value[1]);
+
+                        // Convert the Unix timestamp to IST
+                        var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
+
+                        // Create a ChartDataPoint object and add it to the list
+                        chartData.Add(new ChartDataCounter2Class
+                        {
+                            TimeRange = range,
+                            Timestamp = istTime.DateTime,
+                            Value = metricValue
+                        });
+                    }
+                }
+
+                return chartData;
+            }
+
+            throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
+        }
+
+        public async Task<List<ChartDataCounters>> ChartDataTotalEmployes(string timeRange)
+        {
+            var time = timeRange;
+            var promQLQuery = $"Total_Employee_Overall[{timeRange}]";
             var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
 
             var response = await _httpClient.GetAsync(queryUrl);
@@ -284,7 +391,7 @@
                         chartData.Add(new ChartDataCounters
                         {
                            
-                            Timestamp = istTime.UtcDateTime,
+                            Timestamp = istTime.DateTime,
                             Value = metricValue
                         });
                     }
@@ -296,9 +403,10 @@
             throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
         }
 
-        public async Task<List<ChartDataCounters>> ChartDataIndexCount()
+        public async Task<List<ChartDataCounters>> ChartDataIndexCount(string timeRange)
         {
-            var promQLQuery = "Total_index_page_reached[1h]";
+            var time = timeRange;
+            var promQLQuery = $"Total_index_page_reached[{time}]";
             var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
 
             var response = await _httpClient.GetAsync(queryUrl);
@@ -334,7 +442,7 @@
                         chartData.Add(new ChartDataCounters
                         {
 
-                            Timestamp = istTime.UtcDateTime,
+                            Timestamp = istTime.DateTime,
                             Value = metricValue
                         });
                     }

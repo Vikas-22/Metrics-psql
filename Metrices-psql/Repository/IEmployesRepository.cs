@@ -17,6 +17,8 @@ namespace Metrices_psql.datalayer
 
             bool DeleteEmployes(int id);
 
+            //public void DeleteAllEmployees();
+
 
         }
     }

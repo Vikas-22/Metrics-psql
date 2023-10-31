@@ -21,10 +21,11 @@ namespace Metrices_psql.datalayer
         Task<string> TotalEmployesByDepartment();
 
 
-
-        Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment();
-        Task<List<ChartDataCounters>> ChartDataTotalEmployes();
-        Task<List<ChartDataCounters>> ChartDataIndexCount();
+        //chartdata
+        Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment(string timeRange);
+        Task<List<ChartDataCounters>> ChartDataTotalEmployes(string timeRange);
+        Task<List<ChartDataCounters>> ChartDataIndexCount(string timeRange);
+        Task<List<ChartDataCounter2Class>> ChartDataFindRequestDuration(string timeRange);
 
     }
 }

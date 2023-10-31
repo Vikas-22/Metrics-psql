@@ -23,6 +23,8 @@ namespace Metrices_psql.Controllers
         {
             employesRepository = _employesRepository;
             prometheusQueryService = _prometheusQueryService;
+            
+
         }
 
 
@@ -141,6 +143,11 @@ namespace Metrices_psql.Controllers
             }
           
         }
+
+
+
+        //[HttpDelete]
+        //public void DeleteAllEmployees() => employesRepository.DeleteAllEmployees();
     }
 
 

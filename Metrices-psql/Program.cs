@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Prometheus;
 using Metrices_psql;
 using Metrices_psql.datalayer;
+using Metrices_psql.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 var app = builder.Build();
 
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -37,6 +39,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 // Configure Prometheus metrics
 app.UseMetricServer();

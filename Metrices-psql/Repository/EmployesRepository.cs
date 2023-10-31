@@ -70,5 +70,13 @@ namespace Metrices_psql.datalayer
 
 
         }
+
+
+        //public void DeleteAllEmployees()
+        //{
+        //    var employees = _context.Employes.ToList();
+        //    _context.Employes.RemoveRange(employees);
+        //    _context.SaveChanges();
+        //}
     }
 }
