@@ -22,20 +22,20 @@ namespace Metrices_psql.Controllers
             _prometheusQueryServices = prometheusQueryServices;
         }
 
-        [HttpGet("CustomQuery")]
-        public async Task<IActionResult> CustomQuery(string customquery)
-        {
-            try
-            {
-                var result = await _prometheusQueryServices.CustomQueryPromethues(customquery);
+        //[HttpGet("CustomQuery")]
+        //public async Task<IActionResult> CustomQuery(string customquery)
+        //{
+        //    try
+        //    {
+        //        var result = await _prometheusQueryServices.CustomQueryPromethues(customquery);
 
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Error querying Promethues: {ex.Message}");
-            }
-        }
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Error querying Promethues: {ex.Message}");
+        //    }
+        //}
 
         [HttpGet("TotalEmployeeinSystemPromethues")]
 
@@ -68,21 +68,35 @@ namespace Metrices_psql.Controllers
             }
         }
 
-        [HttpGet("TotalEmployesByDepartment")]
-        public async Task<IActionResult> TotalEmployesByDepartment()
+        //[HttpGet("TotalEmployesByDepartment")]
+        //public async Task<IActionResult> TotalEmployesByDepartment()
+        //{
+        //    try
+        //    {
+        //        var result = await _prometheusQueryServices.TotalEmployesByDepartment();
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Error querying Promethues: {ex.Message}");
+        //    }
+        //}
+
+        [HttpGet("DatabaseReadSpeedHistogram")]
+        public async Task<IActionResult> Histogram_Duration()
         {
             try
             {
-                var result = await _prometheusQueryServices.TotalEmployesByDepartment();
+
+                var result = await _prometheusQueryServices.HistogramDuration();
                 return Ok(result);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Error querying Promethues: {ex.Message}");
             }
+
         }
 
-
-
-    }
+        }
 }
