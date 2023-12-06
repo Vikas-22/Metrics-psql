@@ -60,7 +60,7 @@ namespace Metrices_psql.Controllers
 
 
 
-        [HttpGet("getallemployee")]
+        [HttpGet("Getallemployee")]
         public ActionResult<IEnumerable<Employes>> GetallEmployes()
         {
             var employes = employesRepository.GetallEmployes();
@@ -69,13 +69,13 @@ namespace Metrices_psql.Controllers
             return Ok(employes);
         }
 
-        [HttpPost("Create New Employee")]
+        [HttpPost("CreateEmployee")]
         public ActionResult<Employes> PostEmployees(Employes employee)
         {
             try
             {
                 var createdEmployee = employesRepository.PostEmployees(employee);
-                prometheusQueryService.TotalEmployesIncBYDepartment(employee);
+                //prometheusQueryService.TotalEmployesIncBYDepartment(employee);
                 prometheusQueryService.TotalEmployesInSystemIncandDec(1);
                 return createdEmployee;
             }
@@ -90,7 +90,7 @@ namespace Metrices_psql.Controllers
         {
             var emplo = employesRepository.GetEmployes(id);
             var deleted = employesRepository.DeleteEmployes(id);
-            prometheusQueryService.TotalEmployesDecByDepartment(emplo);
+           // prometheusQueryService.TotalEmployesDecByDepartment(emplo);
             prometheusQueryService.TotalEmployesInSystemIncandDec(-1);
 
             if (!deleted)

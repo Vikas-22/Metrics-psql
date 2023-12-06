@@ -36,19 +36,16 @@
 
 
 
-        static Prometheus.Counter TotalIndexReached = Metrics.CreateCounter("Total_index_page_reached", "Total_request_got_for_index");
+        static Prometheus.Counter TotalIndexReach = Metrics.CreateCounter("Total_index_page_reached", "Total_request_got_for_index");
 
 
+        //static Gauge TotalEmployeesByDepartment = Metrics.CreateGauge("Total_Employee_in_System_ByDepartment", "Current_number_of_Employees_By_Deparment", new GaugeConfiguration
 
+        //{
 
+        //    LabelNames = new[] { "department" }
 
-        static Gauge TotalEmployeesByDepartment = Metrics.CreateGauge("Total_Employee_in_System_ByDepartment", "Current_number_of_Employees_By_Deparment", new GaugeConfiguration
-
-        {
-
-            LabelNames = new[] { "department" }
-
-        });
+        //});
 
 
 
@@ -100,25 +97,25 @@
 
 
 
-        static Gauge TotalEmployeesOverall = Metrics.CreateGauge("Total_Employee_Overall", "Current_number_of_Employees_Overall");
+        static Gauge TotalNumberOfEmployees = Metrics.CreateGauge("Total_Employees", "Current_number_of_Employees");
 
 
 
 
 
-        static readonly Histogram DatabaseReadSpeedHistogram = Metrics.CreateHistogram(
+        static readonly Histogram DatabaseReadSpeed = Metrics.CreateHistogram(
 
-    "Database_Read_Speed",
+        "Database_Read_Speed",
 
-    "Read speed of database operations in seconds",
+        "Read speed of database operations in seconds",
 
-    new HistogramConfiguration
+         new HistogramConfiguration
 
-    {
+         {
 
-        Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.3, count: 5)
+             Buckets = Histogram.LinearBuckets(start: 0.1, width: 0.3, count: 5)
 
-    }
+         }
 
 );
 
@@ -130,54 +127,46 @@
 
 
 
-        public void TotalEmployesIncBYDepartment(Employes employes)
+        //public void TotalEmployesIncBYDepartment(Employes employes)
 
-        {
+        //{
 
-            if (employes.Department != null)
+        //    if (employes.Department != null)
 
-            {
+        //    {
 
-                string departmetlabel = employes.Department.ToString();
+        //        string departmetlabel = employes.Department.ToString();
 
-                TotalEmployeesByDepartment.WithLabels(departmetlabel).Inc();
+        //        //TotalEmployeesByDepartment.WithLabels(departmetlabel).Inc();
 
-            }
+        //    }
 
-
-
-
-        }
+        //}
 
 
 
-        public void TotalEmployesDecByDepartment(Employes employee)
+        //public void TotalEmployesDecByDepartment(Employes employee)
 
-        {
+        //{
 
-            if (employee.Department != null)
+        //    if (employee.Department != null)
 
-            {
+        //    {
 
-                string departmentlabel = employee.Department.ToString();
+        //        string departmentlabel = employee.Department.ToString();
 
-                TotalEmployeesByDepartment.WithLabels(departmentlabel).Dec();
+        //       // TotalEmployeesByDepartment.WithLabels(departmentlabel).Dec();
 
-            }
+        //    }
 
-        }
+        //}
 
 
 
         public void TotalIndexInc()
 
         {
-
-
-
-            TotalIndexReached.Inc();
-
-
+            TotalIndexReach.Inc();
         }
 
 
@@ -186,7 +175,7 @@
 
         {
 
-            TotalEmployeesOverall.Inc(value);
+            TotalNumberOfEmployees.Inc(value);
 
         }
 
@@ -195,13 +184,9 @@
         public void RecordEmployeeFindDuration(TimeSpan duration)
 
         {
-
-
-
             //EmployeeFindDurationSummary.Observe(duration.TotalSeconds);
 
             //check time it took
-
 
             string label;
 
@@ -270,7 +255,7 @@
 
 
 
-            DatabaseReadSpeedHistogram.Observe(duration.TotalSeconds);
+            DatabaseReadSpeed.Observe(duration.TotalSeconds);
 
         }
 
@@ -316,10 +301,6 @@
 
         //}
 
-
-
-
-
         //recieve data
 
 
@@ -328,9 +309,9 @@
 
         //rcv data-------------------------------------------------------------------------
 
+        // Total Index Reached In Counter Metric
 
-
-        public async Task<string> TotalIndexReachedPromethues()
+        public async Task<string> TotalIndexReached()
 
         {
 
@@ -367,91 +348,14 @@
         }
 
 
-
-        public async Task<string> TotalEmployesOverallSystemPromethues()
-
-        {
-
-            //querry to retrieve data for the past 1 hour
-
-            var promQLQuery = "Total_Employee_Overall[1h]";
-
-
-
-            // Building the url for the query.
-
-            var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
-
-
-
-            // Send the query to Prometheus
-
-            var response = await _httpClient.GetAsync(queryUrl);
-
-
-
-            if (response.IsSuccessStatusCode)
-
-            {
-
-                return await response.Content.ReadAsStringAsync();
-
-            }
-
-
-
-            throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
-
-        }
-
-
-
-        public async Task<string> CustomQueryPromethues(string customquery)
-
-        {
-
-
-            var promQLQuery = customquery;
-
-
-
-            // Building the url for the query.
-
-            // var queryUrl = $"query_range?query={promQLQuery}&start={DateTime.UtcNow.AddMinutes(-60).ToString("yyyy-MM-ddTHH:mm:ssZ")}&end={DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")}&step=15s";
-
-            var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
-
-            //http://localhost:9090/api/v1/query?query=Total_Employee_in_System[1h]
-
-            // Send the query to Prometheus
-
-            var response = await _httpClient.GetAsync(queryUrl);
-
-
-
-            if (response.IsSuccessStatusCode)
-
-            {
-
-                return await response.Content.ReadAsStringAsync();
-
-            }
-
-
-
-            throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
-
-        }
-
-
-
-        public async Task<string> TotalEmployesByDepartment()
+        // Total Employees In Guage Metric
+        public async Task<string> TotalEmployees()
 
         {
 
             //querry to retrieve data for the past 1 hour
 
-            var promQLQuery = "Total_Employee_in_System_ByDepartment[1h]";
+            var promQLQuery = "Total_Employees[1h]";
 
 
 
@@ -475,13 +379,90 @@
 
             }
 
-
-
             throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
 
         }
 
-        public async Task<string> HistogramDuration()
+
+
+        //public async Task<string> CustomQueryPromethues(string customquery)
+
+        //{
+
+
+        //    var promQLQuery = customquery;
+
+
+
+        //    // Building the url for the query.
+
+        //    // var queryUrl = $"query_range?query={promQLQuery}&start={DateTime.UtcNow.AddMinutes(-60).ToString("yyyy-MM-ddTHH:mm:ssZ")}&end={DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")}&step=15s";
+
+        //    var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+
+        //    //http://localhost:9090/api/v1/query?query=Total_Employee_in_System[1h]
+
+        //    // Send the query to Prometheus
+
+        //    var response = await _httpClient.GetAsync(queryUrl);
+
+
+
+        //    if (response.IsSuccessStatusCode)
+
+        //    {
+
+        //        return await response.Content.ReadAsStringAsync();
+
+        //    }
+
+
+
+        //    throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
+
+        //}
+
+
+
+        //public async Task<string> TotalEmployesByDepartment()
+
+        //{
+
+        //    //querry to retrieve data for the past 1 hour
+
+        //    var promQLQuery = "Total_Employee_in_System_ByDepartment[1h]";
+
+
+
+        //    // Building the url for the query.
+
+        //    var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+
+
+
+        //    // Send the query to Prometheus
+
+        //    var response = await _httpClient.GetAsync(queryUrl);
+
+
+
+        //    if (response.IsSuccessStatusCode)
+
+        //    {
+
+        //        return await response.Content.ReadAsStringAsync();
+
+        //    }
+
+
+
+        //    throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
+
+        //}
+
+        
+        
+        public async Task<string> EmployeeGetDuration() // Employee add duration in Histogram Metric
         {
             //querry to retrieve data for the past 1 hour
             var promQLQuery = "Database_Read_Speed_sum[1h]";
@@ -500,430 +481,426 @@
             throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
         }
 
-
-
         //ChartData ---------------------------------------------------------------------------------------------------
 
-        public async Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment(string timeRange)
+        //public async Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment(string timeRange)
 
-        {
+        //{
 
-            var time = timeRange;
+        //    var time = timeRange;
 
-            var promQLQuery = $"Total_Employee_in_System_ByDepartment[{timeRange}]";
+        //    var promQLQuery = $"Total_Employee_in_System_ByDepartment[{timeRange}]";
 
-            var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+        //    var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
 
 
 
-            var response = await _httpClient.GetAsync(queryUrl);
+        //    var response = await _httpClient.GetAsync(queryUrl);
 
 
 
-            if (response.IsSuccessStatusCode)
+        //    if (response.IsSuccessStatusCode)
 
-            {
+        //    {
 
-                var responseContent = await response.Content.ReadAsStringAsync();
+        //        var responseContent = await response.Content.ReadAsStringAsync();
 
 
 
-                // Parse the JSON response from Prometheus
+        //        // Parse the JSON response from Prometheus
 
-                var prometheusData = JObject.Parse(responseContent);
+        //        var prometheusData = JObject.Parse(responseContent);
 
 
 
-                // Extract the "result" data
+        //        // Extract the "result" data
 
-                var results = prometheusData["data"]["result"];
+        //        var results = prometheusData["data"]["result"];
 
 
 
-                // Create a list of ChartDataPoint objects to store data points
+        //        // Create a list of ChartDataPoint objects to store data points
 
-                var chartData = new List<ChartDataPoint>();
+        //        var chartData = new List<ChartDataPoint>();
 
 
 
-                foreach (var result in results)
+        //        foreach (var result in results)
 
-                {
+        //        {
 
-                    var metric = result["metric"];
+        //            var metric = result["metric"];
 
-                    var department = metric["department"].ToString();
+        //            var department = metric["department"].ToString();
 
-                    var values = result["values"];
+        //            var values = result["values"];
 
 
 
-                    foreach (var value in values)
+        //            foreach (var value in values)
 
-                    {
+        //            {
 
-                        // Declare variables inside the inner loop
+        //                // Declare variables inside the inner loop
 
-                        var timestamp = Convert.ToDouble(value[0]);
+        //                var timestamp = Convert.ToDouble(value[0]);
 
-                        var metricValue = Convert.ToDouble(value[1]);
+        //                var metricValue = Convert.ToDouble(value[1]);
 
 
 
-                        // Convert the Unix timestamp to IST
+        //                // Convert the Unix timestamp to IST
 
-                        var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
+        //                var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
 
 
 
-                        // Create a ChartDataPoint object and add it to the list
+        //                // Create a ChartDataPoint object and add it to the list
 
-                        chartData.Add(new ChartDataPoint
+        //                chartData.Add(new ChartDataPoint
 
-                        {
+        //                {
 
-                            Department = department,
+        //                    Department = department,
 
-                            Timestamp = istTime.DateTime,
+        //                    Timestamp = istTime.DateTime,
 
-                            Value = metricValue
+        //                    Value = metricValue
 
-                        });
+        //                });
 
-                    }
+        //            }
 
-                }
+        //        }
 
 
 
-                return chartData;
+        //        return chartData;
 
-            }
+        //    }
 
 
 
-            throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
+        //    throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
 
-        }
+        //}
 
 
 
-        public async Task<List<ChartDataCounter2Class>> ChartDataFindRequestDuration(string timeRange)
+        //public async Task<List<ChartDataCounter2Class>> ChartDataFindRequestDuration(string timeRange)
 
-        {
+        //{
 
-            var time = timeRange;
+        //    var time = timeRange;
 
-            var promQLQuery = $"EmployeeFindDurationSummary[{timeRange}]";
+        //    var promQLQuery = $"EmployeeFindDurationSummary[{timeRange}]";
 
-            var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+        //    var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
 
 
 
-            var response = await _httpClient.GetAsync(queryUrl);
+        //    var response = await _httpClient.GetAsync(queryUrl);
 
 
 
-            if (response.IsSuccessStatusCode)
+        //    if (response.IsSuccessStatusCode)
 
-            {
+        //    {
 
-                var responseContent = await response.Content.ReadAsStringAsync();
+        //        var responseContent = await response.Content.ReadAsStringAsync();
 
 
 
-                // Parse the JSON response from Prometheus
+        //        // Parse the JSON response from Prometheus
 
-                var prometheusData = JObject.Parse(responseContent);
+        //        var prometheusData = JObject.Parse(responseContent);
 
 
 
-                // Extract the "result" data
+        //        // Extract the "result" data
 
-                var results = prometheusData["data"]["result"];
+        //        var results = prometheusData["data"]["result"];
 
 
 
-                // Create a list of ChartDataPoint objects to store data points
+        //        // Create a list of ChartDataPoint objects to store data points
 
-                var chartData = new List<ChartDataCounter2Class>();
+        //        var chartData = new List<ChartDataCounter2Class>();
 
 
 
-                foreach (var result in results)
+        //        foreach (var result in results)
 
-                {
+        //        {
 
-                    var metric = result["metric"];
+        //            var metric = result["metric"];
 
-                    var range = metric["range"].ToString();
+        //            var range = metric["range"].ToString();
 
-                    var values = result["values"];
+        //            var values = result["values"];
 
 
 
-                    foreach (var value in values)
+        //            foreach (var value in values)
 
-                    {
+        //            {
 
-                        // Declare variables inside the inner loop
+        //                // Declare variables inside the inner loop
 
-                        var timestamp = Convert.ToDouble(value[0]);
+        //                var timestamp = Convert.ToDouble(value[0]);
 
-                        var metricValue = Convert.ToDouble(value[1]);
+        //                var metricValue = Convert.ToDouble(value[1]);
 
 
 
-                        // Convert the Unix timestamp to IST
+        //                // Convert the Unix timestamp to IST
 
-                        var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
+        //                var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
 
 
 
-                        // Create a ChartDataPoint object and add it to the list
+        //                // Create a ChartDataPoint object and add it to the list
 
-                        chartData.Add(new ChartDataCounter2Class
+        //                chartData.Add(new ChartDataCounter2Class
 
-                        {
+        //                {
 
-                            TimeRange = range,
+        //                    TimeRange = range,
 
-                            Timestamp = istTime.DateTime,
+        //                    Timestamp = istTime.DateTime,
 
-                            Value = metricValue
+        //                    Value = metricValue
 
-                        });
+        //                });
 
-                    }
+        //            }
 
-                }
+        //        }
 
 
 
-                return chartData;
+        //        return chartData;
 
-            }
+        //    }
 
 
 
-            throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
+        //    throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
 
-        }
+        //}
 
 
 
-        public async Task<List<ChartDataCounters>> ChartDataTotalEmployes(string timeRange)
+        //public async Task<List<ChartDataCounters>> ChartDataTotalEmployes(string timeRange)
 
-        {
+        //{
 
-            var time = timeRange;
+        //    var time = timeRange;
 
-            var promQLQuery = $"Total_Employee_Overall[{timeRange}]";
+        //    var promQLQuery = $"Total_Employees[{timeRange}]";
 
-            var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+        //    var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
 
 
 
-            var response = await _httpClient.GetAsync(queryUrl);
+        //    var response = await _httpClient.GetAsync(queryUrl);
 
 
 
-            if (response.IsSuccessStatusCode)
+        //    if (response.IsSuccessStatusCode)
 
-            {
+        //    {
 
-                var responseContent = await response.Content.ReadAsStringAsync();
+        //        var responseContent = await response.Content.ReadAsStringAsync();
 
 
 
-                // Parse the JSON response from Prometheus
+        //        // Parse the JSON response from Prometheus
 
-                var prometheusData = JObject.Parse(responseContent);
+        //        var prometheusData = JObject.Parse(responseContent);
 
 
 
-                // Extract the "result" data
+        //        // Extract the "result" data
 
-                var results = prometheusData["data"]["result"];
+        //        var results = prometheusData["data"]["result"];
 
 
 
-                // Create a list of ChartDataPoint objects to store data points
+        //        // Create a list of ChartDataPoint objects to store data points
 
-                var chartData = new List<ChartDataCounters>();
+        //        var chartData = new List<ChartDataCounters>();
 
-                var label = "Total Employee";
+        //        var label = "Total Employee";
 
-                foreach (var result in results)
+        //        foreach (var result in results)
 
-                {
+        //        {
 
-                    var metric = result["metric"];
+        //            var metric = result["metric"];
 
-                    var values = result["values"];
+        //            var values = result["values"];
 
 
 
-                    foreach (var value in values)
+        //            foreach (var value in values)
 
-                    {
+        //            {
 
-                        // Declare variables inside the inner loop
+        //                // Declare variables inside the inner loop
 
-                        var timestamp = Convert.ToDouble(value[0]);
+        //                var timestamp = Convert.ToDouble(value[0]);
 
-                        var metricValue = Convert.ToDouble(value[1]);
+        //                var metricValue = Convert.ToDouble(value[1]);
 
-                        
 
 
-                        // Convert the Unix timestamp to IST
 
-                        var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
+        //                // Convert the Unix timestamp to IST
 
+        //                var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
 
 
-                        // Create a ChartDataPoint object and add it to the list
 
-                        chartData.Add(new ChartDataCounters
+        //                // Create a ChartDataPoint object and add it to the list
 
-                        {
+        //                chartData.Add(new ChartDataCounters
 
+        //                {
 
-                            Timestamp = istTime.DateTime,
 
-                            Value = metricValue,
+        //                    Timestamp = istTime.DateTime,
 
-                            Label= label
+        //                    Value = metricValue,
 
-                        });
+        //                    Label= label
 
-                    }
+        //                });
 
-                }
+        //            }
 
+        //        }
 
 
-                return chartData;
 
-            }
+        //        return chartData;
 
+        //    }
 
 
-            throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
 
-        }
+        //    throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
 
+        //}
 
 
-        public async Task<List<ChartDataCounters>> ChartDataIndexCount(string timeRange)
 
-        {
+        //public async Task<List<ChartDataCounters>> ChartDataIndexCount(string timeRange)
 
-            var time = timeRange;
+        //{
 
-            var promQLQuery = $"Total_index_page_reached[{time}]";
+        //    var time = timeRange;
 
-            var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
+        //    var promQLQuery = $"Total_index_page_reached[{time}]";
 
+        //    var queryUrl = $"http://localhost:9090/api/v1/query?query={promQLQuery}";
 
 
-            var response = await _httpClient.GetAsync(queryUrl);
 
+        //    var response = await _httpClient.GetAsync(queryUrl);
 
 
-            if (response.IsSuccessStatusCode)
 
-            {
+        //    if (response.IsSuccessStatusCode)
 
-                var responseContent = await response.Content.ReadAsStringAsync();
+        //    {
 
+        //        var responseContent = await response.Content.ReadAsStringAsync();
 
 
-                // Parse the JSON response from Prometheus
 
-                var prometheusData = JObject.Parse(responseContent);
+        //        // Parse the JSON response from Prometheus
 
+        //        var prometheusData = JObject.Parse(responseContent);
 
 
-                // Extract the "result" data
 
-                var results = prometheusData["data"]["result"];
+        //        // Extract the "result" data
 
+        //        var results = prometheusData["data"]["result"];
 
 
-                // Create a list of ChartDataPoint objects to store data points
 
-                var chartData = new List<ChartDataCounters>();
+        //        // Create a list of ChartDataPoint objects to store data points
 
-                var labelIndex = "Total Index";
+        //        var chartData = new List<ChartDataCounters>();
 
-                foreach (var result in results)
+        //        var labelIndex = "Total Index";
 
-                {
+        //        foreach (var result in results)
 
-                    var metric = result["metric"];
+        //        {
 
-                    var values = result["values"];
+        //            var metric = result["metric"];
 
+        //            var values = result["values"];
 
 
-                    foreach (var value in values)
 
-                    {
+        //            foreach (var value in values)
 
-                        // Declare variables inside the inner loop
+        //            {
 
-                        var timestamp = Convert.ToDouble(value[0]);
+        //                // Declare variables inside the inner loop
 
-                        var metricValue = Convert.ToDouble(value[1]);
+        //                var timestamp = Convert.ToDouble(value[0]);
 
-                        
+        //                var metricValue = Convert.ToDouble(value[1]);
 
 
 
-                        // Convert the Unix timestamp to IST
 
-                        var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
 
+        //                // Convert the Unix timestamp to IST
 
+        //                var istTime = DateTimeOffset.FromUnixTimeSeconds((long)timestamp).ToOffset(TimeSpan.FromHours(5.5)); // IST offset is UTC+5:30
 
-                        // Create a ChartDataPoint object and add it to the list
 
-                        chartData.Add(new ChartDataCounters
 
-                        {
+        //                // Create a ChartDataPoint object and add it to the list
 
+        //                chartData.Add(new ChartDataCounters
 
+        //                {
 
-                            Timestamp = istTime.DateTime,
 
-                            Value = metricValue,
 
-                            Label = labelIndex
+        //                    Timestamp = istTime.DateTime,
 
+        //                    Value = metricValue,
 
-                        });
+        //                    Label = labelIndex
 
-                    }
 
-                }
+        //                });
 
+        //            }
 
+        //        }
 
-                return chartData;
 
-            }
 
+        //        return chartData;
 
+        //    }
 
-            throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
 
-        }
+
+        //    throw new Exception($"Failed to query Prometheus: {response.ReasonPhrase}");
+
+        //}
 
     }
-
-
 
 }
 

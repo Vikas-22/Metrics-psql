@@ -13,6 +13,10 @@ using System.Diagnostics;
 
 namespace Metrices_psql.Controllers
 {
+    [Route("Metrices")]
+
+    [ApiController]
+
     public class PromethuesController : Controller
     {
         private readonly IPrometheusQueryServices _prometheusQueryServices;
@@ -37,13 +41,13 @@ namespace Metrices_psql.Controllers
         //    }
         //}
 
-        [HttpGet("TotalEmployeeinSystemPromethues")]
+        [HttpGet("TotalEmployees")]
 
-        public async Task<IActionResult> TotalEmployeeinSystemPromethues()
+        public async Task<IActionResult> TotalEmployees() 
         {
             try
             {
-                var result = await _prometheusQueryServices.TotalEmployesOverallSystemPromethues();
+                var result = await _prometheusQueryServices.TotalEmployees();
                 return Ok(result);
 
 
@@ -54,12 +58,12 @@ namespace Metrices_psql.Controllers
             }
         }
 
-        [HttpGet("TotalIndexReachedPromethues")]
-        public async Task<IActionResult> TotalIndexReachedPromethues()
+        [HttpGet("TotalIndexReached")]
+        public async Task<IActionResult> TotalIndexReached()
         {
             try
             {
-                var result = await _prometheusQueryServices.TotalIndexReachedPromethues();
+                var result = await _prometheusQueryServices.TotalIndexReached();
                 return Ok(result);
             }
             catch (Exception ex)
@@ -82,13 +86,13 @@ namespace Metrices_psql.Controllers
         //    }
         //}
 
-        [HttpGet("DatabaseReadSpeedHistogram")]
-        public async Task<IActionResult> Histogram_Duration()
+        [HttpGet("EmployeeGetDuration")]
+        public async Task<IActionResult> EmployeeGetDuration()
         {
             try
             {
 
-                var result = await _prometheusQueryServices.HistogramDuration();
+                var result = await _prometheusQueryServices.EmployeeGetDuration();
                 return Ok(result);
             }
             catch (Exception ex)

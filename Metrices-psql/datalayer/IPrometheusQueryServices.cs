@@ -12,9 +12,9 @@ namespace Metrices_psql.datalayer
 
         //post data
 
-        void TotalEmployesIncBYDepartment(Employes employee);
+       // void TotalEmployesIncBYDepartment(Employes employee);
 
-        void TotalEmployesDecByDepartment(Employes employee);
+        //void TotalEmployesDecByDepartment(Employes employee);
 
         void TotalIndexInc();
 
@@ -30,27 +30,27 @@ namespace Metrices_psql.datalayer
 
         //get data
 
-        Task<string> CustomQueryPromethues(string customquery);
+   //   Task<string> CustomQueryPromethues(string customquery);
 
-        Task<string> TotalIndexReachedPromethues();
+        Task<string> TotalIndexReached();
 
-        Task<string> TotalEmployesOverallSystemPromethues();
+        Task<string> TotalEmployees();
 
-        Task<string> TotalEmployesByDepartment();
+    //  Task<string> TotalEmployesByDepartment();
 
-        Task<string> HistogramDuration();
+        Task<string> EmployeeGetDuration();
 
 
 
         //chartdata
 
-        Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment(string timeRange);
+        //Task<List<ChartDataPoint>> ChartDataTotalEmployeesByDepartment(string timeRange);
 
-        Task<List<ChartDataCounters>> ChartDataTotalEmployes(string timeRange);
+        //Task<List<ChartDataCounters>> ChartDataTotalEmployes(string timeRange);
 
-        Task<List<ChartDataCounters>> ChartDataIndexCount(string timeRange);
+        //Task<List<ChartDataCounters>> ChartDataIndexCount(string timeRange);
 
-        Task<List<ChartDataCounter2Class>> ChartDataFindRequestDuration(string timeRange);
+        //Task<List<ChartDataCounter2Class>> ChartDataFindRequestDuration(string timeRange);
 
 
 
