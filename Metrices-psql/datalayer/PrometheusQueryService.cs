@@ -97,7 +97,7 @@
 
 
 
-        static Gauge TotalNumberOfEmployees = Metrics.CreateGauge("Total_Employees", "Current_number_of_Employees");
+        static Gauge TotalNumberOfEmployees = Metrics.CreateGauge("Total_Employee_Overall", "Current_number_of_Employees");
 
 
 
@@ -355,7 +355,7 @@
 
             //querry to retrieve data for the past 1 hour
 
-            var promQLQuery = "Total_Employees[1h]";
+            var promQLQuery = "Total_Employee_Overall[1h]";
 
 
 

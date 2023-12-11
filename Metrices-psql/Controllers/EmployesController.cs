@@ -58,15 +58,31 @@ namespace Metrices_psql.Controllers
         //    }
         //}
 
+        [HttpGet("SetIndexCount")]
+        public ActionResult<string> Indexcount()
+        {
+            prometheusQueryService.TotalIndexInc();
+            return ("");
 
+        }
 
         [HttpGet("Getallemployee")]
         public ActionResult<IEnumerable<Employes>> GetallEmployes()
         {
-            var employes = employesRepository.GetallEmployes();
-            prometheusQueryService.TotalIndexInc();
+            var stopwatch = Stopwatch.StartNew();
+            {
+                var employes = employesRepository.GetallEmployes();
 
-            return Ok(employes);
+                if (employes == null)
+                {
+                    stopwatch.Stop();
+                    prometheusQueryService.RecordEmployeeFindDuration(stopwatch.Elapsed);
+                    return NotFound();
+                }
+                stopwatch.Stop();
+                prometheusQueryService.RecordEmployeeFindDuration(stopwatch.Elapsed);
+                return Ok(employes);
+            }
         }
 
         [HttpPost("CreateEmployee")]
@@ -124,22 +140,8 @@ namespace Metrices_psql.Controllers
         [HttpGet("{id}")]
         public ActionResult<Employes> GetEmployes(int id)
         {
-
-            var stopwatch = Stopwatch.StartNew();
-            {
-                var employes = employesRepository.GetEmployes(id);
-
-                if (employes == null)
-                {
-                    stopwatch.Stop();
-                    prometheusQueryService.RecordEmployeeFindDuration(stopwatch.Elapsed);
-                    return NotFound();
-                }
-                stopwatch.Stop();
-                prometheusQueryService.RecordEmployeeFindDuration(stopwatch.Elapsed);
-                return employes;
-            }
-          
+            var employes = employesRepository.GetEmployes(id);
+            return employes;
         }
     }
 
