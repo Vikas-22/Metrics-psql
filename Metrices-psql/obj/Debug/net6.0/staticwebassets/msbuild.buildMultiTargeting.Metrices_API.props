@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Metrices_API.props" />
+</Project>

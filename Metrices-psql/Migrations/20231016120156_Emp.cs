@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Metrices_psql.Migrations
+namespace Metrices_API.Migrations
 {
     /// <inheritdoc />
     public partial class Emp : Migration

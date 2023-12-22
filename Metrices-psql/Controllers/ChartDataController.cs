@@ -1,5 +1,4 @@
-﻿using Metrices_psql.datalayer;
-
+﻿using Metrices_API.PrometheusQueryServices;
 using Microsoft.AspNetCore.Http;
 
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +7,7 @@ using System.ComponentModel;
 
 
 
-namespace Metrices_psql.Controllers
+namespace Metrices_API.Controllers
 
 {
 

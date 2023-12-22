@@ -1,4 +1,4 @@
-﻿namespace Metrices_psql.Models
+﻿namespace Metrices_API.Models
 {
     public class ChartDataCounter2Class
     {

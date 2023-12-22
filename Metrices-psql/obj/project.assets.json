@@ -13035,11 +13035,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\RAHULAPA\\Source\\Repos\\Metrics-psqlNew\\Metrices-psql\\Metrices-psql.csproj",
-      "projectName": "Metrices-psql",
-      "projectPath": "C:\\Users\\RAHULAPA\\Source\\Repos\\Metrics-psqlNew\\Metrices-psql\\Metrices-psql.csproj",
+      "projectUniqueName": "C:\\Users\\RAHULAPA\\source\\repos\\Metrics-psqlNew\\Metrices-psql\\Metrices_API.csproj",
+      "projectName": "Metrices_API",
+      "projectPath": "C:\\Users\\RAHULAPA\\source\\repos\\Metrics-psqlNew\\Metrices-psql\\Metrices_API.csproj",
       "packagesPath": "C:\\Users\\RAHULAPA\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\RAHULAPA\\Source\\Repos\\Metrics-psqlNew\\Metrices-psql\\obj\\",
+      "outputPath": "C:\\Users\\RAHULAPA\\source\\repos\\Metrics-psqlNew\\Metrices-psql\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\RAHULAPA\\AppData\\Roaming\\NuGet\\NuGet.Config",

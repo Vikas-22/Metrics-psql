@@ -1,9 +1,10 @@
-﻿using Metrices_psql.datalayer;
+﻿using Metrices_API.datalayer;
+using Metrices_API.PrometheusQueryServices;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Prometheus;
 
-namespace Metrices_psql
+namespace Metrices_API
 {
     public class Startup
     {

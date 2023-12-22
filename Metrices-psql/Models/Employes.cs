@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Metrices_psql.Models
+namespace Metrices_API.Models
 {
     public class Employes
     {

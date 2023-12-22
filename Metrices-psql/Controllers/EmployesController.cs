@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Metrices_psql.Models;
+using Metrices_API.Models;
 using Prometheus;
-using Metrices_psql.datalayer;
+using Metrices_API.datalayer;
 using System.Diagnostics;
+using Metrices_API.PrometheusQueryServices;
 
-namespace Metrices_psql.Controllers
+namespace Metrices_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

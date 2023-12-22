@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "kP/tnGb8njy33t9Qr7TWEhCbFY6BLuGQyj8Zg9QHQdM=",
-  "Source": "Metrices-psql",
-  "BasePath": "_content/Metrices-psql",
+  "Hash": "Qw1hY/bapcuio75XFrrE4K2H7hXRDa7CwqbdaJzKq2A=",
+  "Source": "Metrices_API",
+  "BasePath": "_content/Metrices_API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],

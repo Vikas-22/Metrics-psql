@@ -1,7 +1,7 @@
-﻿using Metrices_psql.Models;
+﻿using Metrices_API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Metrices_psql
+namespace Metrices_API
 {
     public class ApplicationDbContext : DbContext
     {
